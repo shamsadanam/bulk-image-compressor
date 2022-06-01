@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import Box from "@mui/material/Box";
 // import Typography from "@mui/material/Typography";
 import Input from "@mui/material/Input";
@@ -9,12 +9,16 @@ import Grid from "@mui/material/Grid";
 
 const FileInputForm = ({ handleFileSelection, handleCompression }) => {
   const fileInputRef = useRef("");
-
-  const [options, setOptions] = useState({
+  // const [options, setOptions] = useState({
+  //   maxSizeMB: 1,
+  //   maxWidthOrHeight: 1920,
+  //   useWebWorker: true,
+  // });
+  const options = {
     maxSizeMB: 1,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
-  });
+  };
 
   return (
     <Box component="form" noValidate autoComplete="off">

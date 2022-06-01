@@ -13,6 +13,7 @@ const App = () => {
   };
 
   const handleCompression = async (options) => {
+    console.log("compressing");
     try {
       const compressedFile = await imageCompression(selectedFiles, options);
       setCompressedFiles(compressedFile);
@@ -29,6 +30,7 @@ const App = () => {
       justifyContent="center"
       alignItems="center"
     >
+      {console.log("app rendered")}
       <Grid item xs={12}>
         <FileInputForm
           handleFileSelection={handleFileSelection}
