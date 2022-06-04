@@ -4,10 +4,10 @@ import IconButton from "@mui/material/IconButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import InfoBox from "./InfoBox";
 
-const ImageBox = ({ fileURL, fileName, fileSize, compressed }) => {
+const ImageBox = ({ file: { source, name, size, compressed } }) => {
   const [imgMeta, setImgMeta] = useState({
-    url: fileURL,
-    size: fileURL.size,
+    url: source,
+    size: source.size,
     dimensions: "",
   });
 
@@ -15,16 +15,16 @@ const ImageBox = ({ fileURL, fileName, fileSize, compressed }) => {
 
   useEffect(() => {
     console.log("The imagebox just rendered");
-    // console.log(fileURL);
-    if (fileURL instanceof Blob) {
-      setImgMeta({ ...imgMeta, url: URL.createObjectURL(fileURL) });
+    console.log(source);
+    if (source instanceof Blob) {
+      setImgMeta({ ...imgMeta, url: URL.createObjectURL(source) });
     }
-  }, [fileURL]);
+  }, [source]);
 
   const handleImgLoad = () => {
-    // console.log(`Before Revoking URL: ${fileURL}`);
-    // URL.revokeObjectURL(fileURL);
-    // console.log(`After Revoking URL: ${fileURL}`);
+    // console.log(`Before Revoking URL: ${source}`);
+    // URL.revokeObjectURL(source);
+    // console.log(`After Revoking URL: ${source}`);
   };
 
   useEffect(() => {
@@ -40,17 +40,15 @@ const ImageBox = ({ fileURL, fileName, fileSize, compressed }) => {
         ref={imgRef}
         component="img"
         src={imgMeta.url}
-        alt={fileName}
+        alt={name}
         sx={{ maxWidth: "100%" }}
         onLoad={() => handleImgLoad()}
       />
-      {fileSize !== 0 && (
-        <InfoBox size={fileSize} dimensions={imgMeta.dimensions} />
-      )}
+      {size !== 0 && <InfoBox size={size} dimensions={imgMeta.dimensions} />}
       {compressed && (
         <IconButton
-          href={fileURL}
-          download
+          href={imgMeta.url}
+          download={name}
           aria-label="download"
           color="success"
         >

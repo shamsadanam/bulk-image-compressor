@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import imageCompression from "browser-image-compression";
 import Grid from "@mui/material/Grid";
 import FileInputForm from "./FileInputForm";
@@ -8,41 +8,42 @@ const PLACEHOLDER_IMG = require("../assets/img/placeholder.png");
 
 const App = () => {
   const [selectedFiles, setSelectedFiles] = useState({
-    fileURL: PLACEHOLDER_IMG,
-    fileName: "placeholder-img",
-    fileSize: 0,
+    source: PLACEHOLDER_IMG,
+    name: "placeholder-img",
+    size: 0,
   });
   const [compressedFiles, setCompressedFiles] = useState({
-    fileURL: PLACEHOLDER_IMG,
-    fileName: "placeholder-img",
-    fileSize: 0,
+    source: PLACEHOLDER_IMG,
+    name: "placeholder-img",
+    size: 0,
     compressed: false,
   });
 
   const handleFileSelection = (e) => {
-    const fileURL = e.target.files[0];
-    const fileName = e.target.files[0].name;
-    const fileSize = e.target.files[0].size;
+    const source = e.target.files[0];
+    const name = e.target.files[0].name;
+    const size = e.target.files[0].size;
 
     setSelectedFiles({
       ...selectedFiles,
-      fileURL: fileURL,
-      fileName: fileName,
-      fileSize: fileSize,
+      source,
+      name,
+      size,
     });
   };
 
   const handleCompression = async (options) => {
     try {
-      const compressedFileURL = await imageCompression(
-        selectedFiles.fileURL,
+      const compressedBlob = await imageCompression(
+        selectedFiles.source,
         options
       );
       setCompressedFiles({
         ...compressedFiles,
-        fileURL: compressedFileURL,
-        fileName: `${selectedFiles.fileName}-compressed`,
-        fileSize: compressedFileURL.size,
+        source: compressedBlob,
+        name: `compressed-${selectedFiles.name}`,
+        size: compressedBlob.size,
+        compressed: true,
       });
     } catch (error) {
       console.log(error);
@@ -64,19 +65,10 @@ const App = () => {
         />
       </Grid>
       <Grid item xs={6}>
-        <ImageBox
-          fileURL={selectedFiles.fileURL}
-          fileName={selectedFiles.fileName}
-          fileSize={selectedFiles.fileSize}
-        />
+        <ImageBox file={selectedFiles} />
       </Grid>
       <Grid item xs={6}>
-        <ImageBox
-          fileURL={compressedFiles.fileURL}
-          fileName={compressedFiles.fileName}
-          fileSize={compressedFiles.fileSize}
-          compressed={compressedFiles.compressed}
-        />
+        <ImageBox file={compressedFiles} />
       </Grid>
     </Grid>
   );
