@@ -1,46 +1,55 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import InfoBox from "./InfoBox";
 
-const PLACEHOLDER_IMG = require("../assets/img/placeholder.png");
-
-const ImageBox = ({ file, compressed }) => {
+const ImageBox = ({ fileURL, fileName, fileSize, compressed }) => {
   const [imgMeta, setImgMeta] = useState({
-    imgLoaded: false,
-    url: file ? URL.createObjectURL(file) : "",
-    name: file ? file.name : "placeholder-image",
-    size: "",
+    url: fileURL,
+    size: fileURL.size,
     dimensions: "",
   });
-  // console.log(file && URL.createObjectURL(file));
+
   const imgRef = useRef("");
 
+  useEffect(() => {
+    console.log("The imagebox just rendered");
+    // console.log(fileURL);
+    if (fileURL instanceof Blob) {
+      setImgMeta({ ...imgMeta, url: URL.createObjectURL(fileURL) });
+    }
+  }, [fileURL]);
+
   const handleImgLoad = () => {
-    console.log("setting img meta");
+    // console.log(`Before Revoking URL: ${fileURL}`);
+    // URL.revokeObjectURL(fileURL);
+    // console.log(`After Revoking URL: ${fileURL}`);
+  };
+
+  useEffect(() => {
     setImgMeta({
       ...imgMeta,
-      imgLoaded: true,
-      size: file.size,
       dimensions: `${imgRef.current.naturalWidth}x${imgRef.current.naturalHeight}`,
     });
-  };
+  }, []);
 
   return (
     <Box>
       <Box
         ref={imgRef}
         component="img"
-        src={imgMeta.url ? imgMeta.url : PLACEHOLDER_IMG}
-        alt={imgMeta.name}
+        src={imgMeta.url}
+        alt={fileName}
         sx={{ maxWidth: "100%" }}
         onLoad={() => handleImgLoad()}
       />
-      {file && <InfoBox size={imgMeta.size} dimensions={imgMeta.dimensions} />}
-      {compressed && file && (
+      {fileSize !== 0 && (
+        <InfoBox size={fileSize} dimensions={imgMeta.dimensions} />
+      )}
+      {compressed && (
         <IconButton
-          href={imgMeta.url}
+          href={fileURL}
           download
           aria-label="download"
           color="success"
