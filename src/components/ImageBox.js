@@ -1,60 +1,85 @@
 import React, { useState, useRef, useEffect } from "react";
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import InfoBox from "./InfoBox";
 
-const ImageBox = ({ file: { source, name, size, compressed } }) => {
-  const [imgMeta, setImgMeta] = useState({
-    url: source,
-    size: source.size,
-    dimensions: "",
-  });
+const ImageBox = ({ file }) => {
+  const { id, source, name, size, selected, compressed } = file;
+  // const [imgMeta, setImgMeta] = useState({
+  //   url: source,
+  //   size: 0,
+  //   dimensions: "",
+  // });
+  // const [imgRes, setImgRes] = useState({
+  //   width: 0,
+  //   height: 0,
+  // });
 
   const imgRef = useRef("");
 
   useEffect(() => {
     console.log("The imagebox just rendered");
-    console.log(source);
-    if (source instanceof Blob) {
-      setImgMeta({ ...imgMeta, url: URL.createObjectURL(source) });
-    }
-  }, [source]);
+    // console.log(imgRef.current.naturalWidth);
+    // console.log(file);
+    // if (source instanceof Blob) {
+    //   setImgMeta({
+    //     ...imgMeta,
+    //     url: URL.createObjectURL(source),
+    //     name: name,
+    //     size: size,
+    //     dimensions: `${imgRef.current.naturalWidth}x${imgRef.current.naturalHeight}`,
+    //   });
+    // }
+  }, [file]);
 
   const handleImgLoad = () => {
-    // console.log(`Before Revoking URL: ${source}`);
-    // URL.revokeObjectURL(source);
-    // console.log(`After Revoking URL: ${source}`);
+    console.log(
+      `${imgRef.current.naturalWidth}x${imgRef.current.naturalHeight}`
+    );
   };
 
-  useEffect(() => {
-    setImgMeta({
-      ...imgMeta,
-      dimensions: `${imgRef.current.naturalWidth}x${imgRef.current.naturalHeight}`,
-    });
-  }, []);
-
   return (
-    <Box>
+    <Box key={id}>
       <Box
         ref={imgRef}
         component="img"
-        src={imgMeta.url}
+        src={source instanceof Blob ? URL.createObjectURL(source) : source}
         alt={name}
         sx={{ maxWidth: "100%" }}
         onLoad={() => handleImgLoad()}
       />
-      {size !== 0 && <InfoBox size={size} dimensions={imgMeta.dimensions} />}
-      {compressed && (
-        <IconButton
-          href={imgMeta.url}
-          download={name}
-          aria-label="download"
-          color="success"
-        >
-          <FileDownloadIcon fontSize="large" />
-        </IconButton>
-      )}
+      <Grid container alignItems="center" justifyContent="space-between">
+        <Grid xs={6} p={1} item>
+          {(selected || compressed) && (
+            // <InfoBox size={1024000 + 24 * 1024} dimensions={"1200x900px"} />
+            <InfoBox
+              size={size}
+              res={{
+                width: imgRef.current.naturalWidth,
+                height: imgRef.current.naturalHeight,
+              }}
+            />
+          )}
+        </Grid>
+        <Grid xs={6} p={1} item>
+          {compressed && (
+            <Button
+              href={source}
+              download={name}
+              aria-label="download"
+              variant="contained"
+              fullWidth
+              color="success"
+              size="medium"
+              endIcon={<FileDownloadIcon />}
+            >
+              Download
+            </Button>
+          )}
+        </Grid>
+      </Grid>
     </Box>
   );
 };
