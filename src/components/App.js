@@ -1,44 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 import Grid from "@mui/material/Grid";
 import FileInputForm from "./FileInputForm";
 import ImageGrid from "./ImageGrid";
-// import ImageBox from "./ImageBox";
-
-// const PLACEHOLDER_IMG = require("../assets/img/placeholder.png");
 
 const App = () => {
-  // const [selectedFiles, setSelectedFiles] = useState({
-  //   source: PLACEHOLDER_IMG,
-  //   name: "placeholder-img",
-  //   size: 0,
-  //   selected: false,
-  // });
-
   const [selectedFiles, setSelectedFiles] = useState([]);
-
-  // const [compressedFiles, setCompressedFiles] = useState({
-  //   source: PLACEHOLDER_IMG,
-  //   name: "placeholder-img",
-  //   size: 0,
-  //   compressed: false,
-  // });
   const [compressedFiles, setCompressedFiles] = useState([]);
 
+  useEffect(() => {
+    // console.log("Selected: ");
+    // console.log(selectedFiles);
+    // console.log("Compressed: ");
+    // console.log(compressedFiles);
+  });
+
   const handleFileSelection = (e) => {
-    // const source = e.target.files[0];
-    // const name = e.target.files[0].name;
-    // const size = e.target.files[0].size;
-
-    // setSelectedFiles({
-    //   ...selectedFiles,
-    //   source: source,
-    //   name: name,
-    //   size: size,
-    //   selected: true,
-    // });
-
     const userInputFiles = Object.values(e.target.files).map((file) => {
       return {
         id: uuidv4(),
@@ -52,22 +30,32 @@ const App = () => {
     setSelectedFiles([...selectedFiles, ...userInputFiles]);
   };
 
-  const handleCompression = async (options) => {
+  const getCompressedBlob = async (source, options) => {
     try {
-      const compressedBlob = await imageCompression(
-        selectedFiles.source,
-        options
-      );
-      setCompressedFiles({
-        ...compressedFiles,
-        source: compressedBlob,
-        name: `compressed-${selectedFiles.name}`,
-        size: compressedBlob.size,
-        compressed: true,
-      });
-    } catch (error) {
-      console.log(error);
+      const blob = await imageCompression(source, options);
+      return blob;
+    } catch (e) {
+      console.log(e);
     }
+  };
+  const handleCompression = (options) => {
+    const helper = [];
+    let count = 0;
+    const promises = selectedFiles.map(async (file) => {
+      return await getCompressedBlob(file.source, options);
+    });
+    Promise.all(promises).then((res) => {
+      res.map((r) =>
+        helper.push({
+          id: uuidv4(),
+          source: r,
+          name: r.name,
+          size: r.size,
+          compressed: true,
+        })
+      );
+      setCompressedFiles([...compressedFiles, ...helper]);
+    });
   };
 
   return (
@@ -90,6 +78,7 @@ const App = () => {
       </Grid>
       <Grid item xs={6}>
         {/* <ImageBox file={compressedFiles} /> */}
+        <ImageGrid files={compressedFiles} />
       </Grid>
     </Grid>
   );
