@@ -12,7 +12,6 @@ const InfoBox = ({ size, name, res }) => {
   return (
     <Stack>
       <Typography variant="body2">{sizeAndUnit}</Typography>
-      <Typography varian="body2">{name}</Typography>
       {res && (
         <Typography variant="body2">{`${res.width}x${res.height}`}</Typography>
       )}

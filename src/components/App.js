@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import Grid from "@mui/material/Grid";
 import FileInputForm from "./FileInputForm";
 import ImageGrid from "./ImageGrid";
+import DownloadAllBtn from "./DownloadAllBtn";
 
 const App = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -40,17 +41,16 @@ const App = () => {
   };
   const handleCompression = (options) => {
     const helper = [];
-    let count = 0;
     const promises = selectedFiles.map(async (file) => {
       return await getCompressedBlob(file.source, options);
     });
-    Promise.all(promises).then((res) => {
-      res.map((r) =>
+    Promise.all(promises).then((blobs) => {
+      blobs.map((blob) =>
         helper.push({
           id: uuidv4(),
-          source: r,
-          name: r.name,
-          size: r.size,
+          source: blob,
+          name: blob.name,
+          size: blob.size,
           compressed: true,
         })
       );
@@ -64,7 +64,6 @@ const App = () => {
       sx={{ maxWidth: "80vw", mx: "auto" }}
       spacing={2}
       justifyContent="center"
-      alignItems="center"
     >
       <Grid item xs={12}>
         <FileInputForm
@@ -74,11 +73,10 @@ const App = () => {
       </Grid>
       <Grid item xs={6}>
         <ImageGrid files={selectedFiles} />
-        {/* <ImageBox file={selectedFiles} /> */}
       </Grid>
       <Grid item xs={6}>
-        {/* <ImageBox file={compressedFiles} /> */}
         <ImageGrid files={compressedFiles} />
+        <DownloadAllBtn files={compressedFiles} />
       </Grid>
     </Grid>
   );
