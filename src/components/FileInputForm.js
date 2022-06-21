@@ -16,7 +16,7 @@ const FileInputForm = ({ handleFileSelection, handleCompression }) => {
   // });
   const options = {
     maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
+    maxWidthOrHeight: 1600,
     useWebWorker: true,
   };
 

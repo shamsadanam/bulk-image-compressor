@@ -54,7 +54,7 @@ const App = () => {
           compressed: true,
         })
       );
-      setCompressedFiles([...compressedFiles, ...helper]);
+      setCompressedFiles([...helper]);
     });
   };
 
@@ -71,7 +71,7 @@ const App = () => {
           handleCompression={handleCompression}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={6} sx={{ border: "1px solid transparent" }}>
         <ImageGrid files={selectedFiles} />
       </Grid>
       <Grid item xs={6}>
