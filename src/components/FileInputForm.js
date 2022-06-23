@@ -32,7 +32,7 @@ const FileInputForm = ({ handleFileSelection, handleCompression }) => {
         alignItems="center"
       >
         <Input
-          sx={{ fontSize: "inherit" }}
+          sx={{ fontSize: "inherit", maxWidth: "60%" }}
           ref={fileInputRef}
           type="file"
           inputProps={{ multiple: true }}
