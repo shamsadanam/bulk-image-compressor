@@ -64,6 +64,7 @@ const ImageBox = ({ file }) => {
         position: "relative",
         display: "flex",
         "&:hover": { cursor: "pointer" },
+        outline: "1px solid red",
       }}
     >
       {(selected || compressed) && (
@@ -71,6 +72,7 @@ const ImageBox = ({ file }) => {
           content={compressed ? "Compressed" : "Original"}
           color={compressed ? "green" : "amber"}
           position={{ top: 0, right: 0 }}
+          sx={{ display: "none" }}
         />
       )}
       {useMemo(() => renderImg(source), [source])}

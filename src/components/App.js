@@ -1,33 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import FileInputForm from "./FileInputForm";
 import ImageGrid from "./ImageGrid";
 import DownloadAllBtn from "./DownloadAllBtn";
+// import "./App.scss";
 
 const App = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [compressedFiles, setCompressedFiles] = useState([]);
-
-  useEffect(() => {
-    // console.log("Selected: ");
-    // console.log(selectedFiles);
-    // console.log("Compressed: ");
-    // console.log(compressedFiles);
-    // const zip = new JSZip();
-    // //loop through the compressedfile
-    // //zip.file(file.name, file.source);
-    // zip.file("test.txt", "Hello World\n");
-    // zip.file("test2.txt", "this is file 2\n");
-    // zip.generateAsync({ type: "blob" }).then((blob) => {
-    //   saveAs(blob, "hello.zip");
-    // });
-    // console.log(zip);
-  });
 
   const handleFileSelection = (e) => {
     const userInputFiles = Object.values(e.target.files).map((file) => {
@@ -83,13 +69,14 @@ const App = () => {
   };
 
   return (
-    <Container maxWidth="80vw">
-      <Grid
-        container
-        // sx={{ maxWidth: "80vw", mx: "auto" }}
-        spacing={2}
-        justifyContent="center"
-      >
+    <Container
+      sx={{
+        backgroundColor: "hsla(150, 83%, 55%, 0.363)",
+        outline: "1px solid red",
+        maxWidth: "800px",
+      }}
+    >
+      <Grid container spacing={2} justifyContent="center">
         <Grid
           item
           xs={12}
@@ -110,15 +97,21 @@ const App = () => {
             />
           )}
         </Grid>
+      </Grid>
+      <Box>
         <Grid item xs={6} sx={{ border: "1px solid transparent" }}>
           <ImageGrid files={selectedFiles} />
         </Grid>
         <Grid item xs={6}>
           <ImageGrid files={compressedFiles} />
         </Grid>
-      </Grid>
+      </Box>
     </Container>
   );
 };
 
 export default App;
+
+// fast load npm start
+// "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+// "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",

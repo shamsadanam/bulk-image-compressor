@@ -5,7 +5,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 const DownloadAllBtn = ({ handleDownloadAll }) => {
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       color="success"
       onClick={handleDownloadAll}
       startIcon={<FileDownloadIcon />}
