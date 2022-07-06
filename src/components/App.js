@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import imageCompression from "browser-image-compression";
-import Container from "@mui/material/Container";
+// import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import JSZip from "jszip";
@@ -9,7 +9,7 @@ import { saveAs } from "file-saver";
 import FileInputForm from "./FileInputForm";
 import ImageGrid from "./ImageGrid";
 import DownloadAllBtn from "./DownloadAllBtn";
-// import "./App.scss";
+import "./App.scss";
 
 const App = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -61,7 +61,7 @@ const App = () => {
     const zip = new JSZip();
     const nestedFolder = zip.folder(folderName);
     compressedFiles.map((file) => {
-      nestedFolder.file(file.name, file.source);
+      return nestedFolder.file(file.name, file.source);
     });
     zip.generateAsync({ type: "blob" }).then((blob) => {
       saveAs(blob, `compressed-images-${Date.now()}.zip`);
@@ -69,44 +69,42 @@ const App = () => {
   };
 
   return (
-    <Container
+    <Box
       sx={{
-        backgroundColor: "hsla(150, 83%, 55%, 0.363)",
-        outline: "1px solid red",
-        maxWidth: "800px",
+        maxWidth: {
+          xs: "95vw",
+          md: "80vw",
+        },
+        mx: "auto",
       }}
     >
-      <Grid container spacing={2} justifyContent="center">
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <Grid
+        container
+        rowSpacing={{ xs: 1, sm: 2 }}
+        columnSpacing={{ xs: 1, sm: 5 }}
+      >
+        <Grid item xs={12} sx={{ display: "flex", gap: "20px", mb: "20px" }}>
           <FileInputForm
             handleFileSelection={handleFileSelection}
             handleCompression={handleCompression}
+            hasFiles={selectedFiles.length > 0 ? true : false}
           />
           {compressedFiles.length > 1 && (
             <DownloadAllBtn
               files={compressedFiles}
               handleDownloadAll={handleDownloadAll}
+              sx={{ ml: "auto" }}
             />
           )}
         </Grid>
-      </Grid>
-      <Box>
-        <Grid item xs={6} sx={{ border: "1px solid transparent" }}>
+        <Grid item xs={6}>
           <ImageGrid files={selectedFiles} />
         </Grid>
         <Grid item xs={6}>
           <ImageGrid files={compressedFiles} />
         </Grid>
-      </Box>
-    </Container>
+      </Grid>
+    </Box>
   );
 };
 

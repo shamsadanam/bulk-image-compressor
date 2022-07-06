@@ -9,13 +9,22 @@ const InfoBox = ({ size, name, el }) => {
     size < BYTES_TO_MB
       ? `${(size / BYTES_TO_KB).toFixed(2)}KB`
       : `${(size / BYTES_TO_MB).toFixed(2)}MB`;
+
+  const styles = {
+    fontSize: { xs: ".70rem", sm: "14px" },
+  };
   return (
     <Stack sx={{ flex: "1" }}>
-      <Typography variant="subtitle2" mb={1}>
+      <Typography sx={styles} variant="subtitle2" mb={1}>
         {name}
       </Typography>
-      <Typography variant="body2">{sizeAndUnit}</Typography>
-      <Typography variant="subtitle2">{`${el.naturalWidth}x${el.naturalHeight}`}</Typography>
+      <Typography sx={styles} variant="body2">
+        {sizeAndUnit}
+      </Typography>
+      <Typography
+        sx={styles}
+        variant="subtitle2"
+      >{`${el.naturalWidth}x${el.naturalHeight}`}</Typography>
     </Stack>
   );
 };

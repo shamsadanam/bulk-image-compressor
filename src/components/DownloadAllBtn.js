@@ -1,16 +1,23 @@
 import React from "react";
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
-const DownloadAllBtn = ({ handleDownloadAll }) => {
+const DownloadAllBtn = ({ handleDownloadAll, sx }) => {
   return (
     <Button
       variant="contained"
       color="success"
       onClick={handleDownloadAll}
-      startIcon={<FileDownloadIcon />}
+      sx={{
+        fontSize: "16px",
+        textTransform: "none",
+        borderRadius: { xs: "10px" },
+        ...sx,
+      }}
     >
-      Download All
+      <FileDownloadIcon sx={{ fontSize: { xs: "30px", sm: "25px" } }} />
+      <Box component="span">Download All</Box>
     </Button>
   );
 };

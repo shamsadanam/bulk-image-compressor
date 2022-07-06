@@ -1,0 +1,19 @@
+@use "_mixins.scss" as *;
+
+.imgBox {
+  @include respondMax(320px) {
+    flex-direction: column;
+  }
+  &__img {
+    max-width: 150px;
+    border: 1px solid red;
+    @include respondMax(320px) {
+      max-width: 50px;
+    }
+    &--placeholder {
+      width: 150px;
+      height: 100px;
+      border: 1px solid red;
+    }
+  }
+}

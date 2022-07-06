@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -44,19 +50,21 @@ const ImageBox = ({ file }) => {
     setLoaded(true);
   };
 
-  const renderImg = (source) => {
-    console.log("rendering img");
-    return (
-      <CardMedia
-        ref={imgRef}
-        component="img"
-        image={source instanceof Blob ? URL.createObjectURL(source) : source}
-        alt={name}
-        sx={{ maxWidth: "150px" }}
-        onLoad={handleLoaded}
-      />
-    );
-  };
+  const renderImg = useCallback(
+    (source) => {
+      return (
+        <CardMedia
+          ref={imgRef}
+          component="img"
+          image={source instanceof Blob ? URL.createObjectURL(source) : source}
+          alt={name}
+          sx={{ maxWidth: { xs: "100%", lg: "300px" } }}
+          onLoad={handleLoaded}
+        />
+      );
+    },
+    [name]
+  );
 
   return (
     <Card
@@ -64,7 +72,8 @@ const ImageBox = ({ file }) => {
         position: "relative",
         display: "flex",
         "&:hover": { cursor: "pointer" },
-        outline: "1px solid red",
+        maxWidth: "100%",
+        flexDirection: { xs: "column", lg: "row" },
       }}
     >
       {(selected || compressed) && (
@@ -72,29 +81,32 @@ const ImageBox = ({ file }) => {
           content={compressed ? "Compressed" : "Original"}
           color={compressed ? "green" : "amber"}
           position={{ top: 0, right: 0 }}
-          sx={{ display: "none" }}
         />
       )}
-      {useMemo(() => renderImg(source), [source])}
+      {useMemo(() => renderImg(source), [source, renderImg])}
       <CardContent
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flex: "1",
-          py: 1,
-          px: 2,
+          py: { xs: "5px", sm: 1 },
+          px: { xs: "5px", sm: 1 },
           "&:last-child": { pb: 1 },
         }}
       >
         {loaded ? (
-          <InfoBox size={size} name={name.slice(0, 15)} el={imgRef.current} />
+          <InfoBox
+            size={size}
+            name={`${name.slice(0, 12)}...`}
+            el={imgRef.current}
+          />
         ) : (
           showPlaceholderTexts()
         )}
         {compressed && (
           <DownloadBtn
-            sx={{ alignSelf: "end" }}
+            sx={{ alignSelf: { xs: "center", sm: "end" } }}
             source={
               source instanceof Blob ? URL.createObjectURL(source) : source
             }

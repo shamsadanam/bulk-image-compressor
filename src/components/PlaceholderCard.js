@@ -6,29 +6,38 @@ import Skeleton from "@mui/material/Skeleton";
 const PlaceholderCard = ({ animation }) => {
   return (
     <Card
-      sx={{ display: "flex", width: "100%", gap: "12px", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        width: "100%",
+        gap: "12px",
+        alignItems: "center",
+        flexDirection: { xs: "column", lg: "row" },
+      }}
     >
       <Skeleton
         animation={animation}
         variant="rectangular"
-        width="150px"
-        height="100px"
+        sx={{
+          width: { xs: "100%", lg: "250px" },
+          height: "auto",
+          aspectRatio: "16/9",
+        }}
       />
-      <Box component="div" sx={{ flex: "1" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignSelf: "center",
-            pt: "2",
-          }}
-        >
-          <Skeleton animation={animation} variant="text" width="80%" />
-          <Skeleton animation={animation} variant="text" width="60%" />
-          <Skeleton animation={animation} variant="text" width="25%" />
-          <Skeleton animation={animation} variant="text" width="40%" />
-        </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          justifyContent: "center",
+          alignSelf: "center",
+          p: 1,
+          flex: "1",
+        }}
+      >
+        <Skeleton animation={animation} variant="text" width="80%" />
+        <Skeleton animation={animation} variant="text" width="60%" />
+        <Skeleton animation={animation} variant="text" width="25%" />
+        <Skeleton animation={animation} variant="text" width="40%" />
       </Box>
     </Card>
   );

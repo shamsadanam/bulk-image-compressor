@@ -1,0 +1,23 @@
+@mixin respondMin($br) {
+  @media only screen and (min-width: $br) {
+    @content;
+  }
+}
+
+@mixin respondBetween($min, $max) {
+  @media only screen and (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
+
+@mixin respondMin($br) {
+  @media only screen and (min-width: $br) {
+    @content;
+  }
+}
+
+@mixin respondMax($br) {
+  @media only screen and (max-width: $br) {
+    @content;
+  }
+}

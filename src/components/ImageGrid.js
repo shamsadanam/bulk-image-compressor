@@ -6,7 +6,7 @@ import PlaceholderCard from "./PlaceholderCard";
 const ImageGrid = ({ files }) => {
   if (files.length === 0) return <PlaceholderCard animation={"wave"} />;
   return (
-    <Stack spacing={2} sx={{ maxWidth: "100%" }}>
+    <Stack sx={{ width: "100%" }} spacing={2}>
       {files.map((file) => (
         <ImageBox
           key={files.compressed ? `compressed-${file.id}` : file.id}
