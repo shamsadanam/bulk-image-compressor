@@ -2,7 +2,7 @@ import React from "react";
 // import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import { green, amber, grey } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
 
 const Badge = ({ content, color, position: { top, bottom, left, right } }) => {
   const styles = {
