@@ -18,8 +18,8 @@ const DownloadAllBtn = ({ handleDownloadAll, disabled }) => {
       disabled={disabled}
     >
       <FileDownloadIcon sx={{ fontSize: { xs: "30px", sm: "25px" } }} />
-      <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
-        Zip Download
+      <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>
+        Zip
       </Box>
     </Button>
   );

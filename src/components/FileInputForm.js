@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { TextField } from "@mui/material";
-import Box from "@mui/material/Box";
+import { TextField, Box } from "@mui/material";
 import SelectFiles from "./SelectFiles";
+import ConfigBtn from "./ConfigBtn";
 import DownloadAllBtn from "./DownloadAllBtn";
 import CompressBtn from "./CompressBtn";
 
-import { F_BETWEEN, KB_TO_MB } from "./constants";
+import { FC_ALL, KB_TO_MB } from "./constants";
 
 const FileInputForm = ({
   handleFileSelection,
@@ -16,17 +16,19 @@ const FileInputForm = ({
 }) => {
   const [config, setConfig] = useState({
     options: {
-      maxSizeKB: 1024,
+      maxSizeKB: 500,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
     },
     hasSizeErr: false,
     hasResErr: false,
     errMsg: {
-      maxSizeKB: "Min Size 10KB",
-      maxWidthOrHeight: "Min Width or Height 10px",
+      maxSizeKB: "Min 10KB",
+      maxWidthOrHeight: "Min 12px",
     },
   });
+
+  const [showConfigForm, setShowConfigForm] = useState(false);
 
   useEffect(() => {}, [config]);
 
@@ -38,7 +40,7 @@ const FileInputForm = ({
     const sanitizedValue = sanitizeValue(value, config.options[key]);
 
     if (key === "maxWidthOrHeight") {
-      if (sanitizedValue < 11) {
+      if (sanitizedValue < 12) {
         return {
           err: { hasResErr: true, errMsg: "Minimum Width or Height is 11PX" },
           sanitizedValue,
@@ -69,41 +71,83 @@ const FileInputForm = ({
     });
   };
 
+  const handleShowConfigForm = () => {
+    setShowConfigForm(!showConfigForm);
+  };
+
   const formStyles = {
     position: { xs: "fixed", sm: "static" },
     bottom: "0px",
     right: "0px",
     left: "0px",
-    ...F_BETWEEN,
+    ...FC_ALL,
     gap: "20px",
-    maxWidth: "90%",
+    maxWidth: { xs: "100%", lg: "80vw" },
     mx: "auto",
-    mb: "20px",
+    mb: { xs: 0, sm: "20px" },
     p: "20px 20px",
     borderRadius: "5px",
     zIndex: 99,
-    backgroundColor: "rgba(255, 255, 255, .6)",
+    backgroundColor: "#f1f1f1",
+  };
+
+  const textfieldStyles = {
+    " & .MuiFormHelperText-root": {
+      fontSize: {
+        xs: "12px",
+        md: "14px",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      fontSize: {
+        xs: "14px",
+        md: "16px",
+      },
+    },
   };
 
   return (
     <Box sx={formStyles} component="form" noValidate autoComplete="off">
       <SelectFiles handleFileSelection={handleFileSelection} />
-      <TextField
-        error={config.hasResErr}
-        helperText={config.errMsg.maxWidthOrHeight}
-        sx={{ ml: "auto" }}
-        label="Max Width or Height in PX"
-        value={config.options.maxWidthOrHeight}
-        onChange={(e) => handleChange("maxWidthOrHeight", e.target.value)}
-      />
-      <TextField
-        error={config.hasSizeErr}
-        helperText={config.errMsg.maxSizeKB}
-        variant="outlined"
-        label="Max Size in KB"
-        min={1}
-        value={config.options.maxSizeKB}
-        onChange={(e) => handleChange("maxSizeKB", e.target.value)}
+      <Box
+        sx={{
+          ...FC_ALL,
+          gap: "10px",
+          display: { xs: "flex  " },
+          position: { xs: "absolute", sm: "static" },
+          width: "100%",
+          maxWidth: { md: "50%" },
+          minHeight: "120px",
+          p: "20px",
+          backgroundColor: "#f1f1f1",
+          zIndex: { xs: -2, sm: 0 },
+          opacity: { xs: showConfigForm ? 1 : 0, sm: 1 },
+          marginBottom: { xs: showConfigForm ? "220px" : "-100px", sm: "0px" },
+          transition: "all .2s ease-in",
+        }}
+      >
+        <TextField
+          error={config.hasResErr}
+          helperText={config.errMsg.maxWidthOrHeight}
+          sx={{ ml: "20px", ...textfieldStyles }}
+          label="Max Width or Height in PX"
+          value={config.options.maxWidthOrHeight}
+          onChange={(e) => handleChange("maxWidthOrHeight", e.target.value)}
+        />
+        <TextField
+          sx={textfieldStyles}
+          error={config.hasSizeErr}
+          helperText={config.errMsg.maxSizeKB}
+          variant="outlined"
+          label="Max Size in KB"
+          min={1}
+          value={config.options.maxSizeKB}
+          onChange={(e) => handleChange("maxSizeKB", e.target.value)}
+        />
+      </Box>
+      <ConfigBtn
+        sx={{ display: { xs: "flex", sm: "none" } }}
+        handleShowConfigForm={handleShowConfigForm}
       />
       <CompressBtn
         disabled={!hasFiles || config.hasSizeErr || config.hasResErr}

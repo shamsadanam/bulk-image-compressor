@@ -4,6 +4,17 @@ import { FormGroup, InputLabel, Box, Input } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 const SelectFiles = ({ handleFileSelection }) => {
+  const handleUpload = (e) => {
+    const userInputFiles = Object.values(e.target.files);
+
+    const supportedFiles = userInputFiles.filter(
+      (file) => file.type.split("/")[0] === "image"
+    );
+    if (supportedFiles.length) {
+      handleFileSelection(supportedFiles);
+    }
+  };
+
   const inputLabelStyles = {
     cursor: "pointer",
     display: "flex",
@@ -43,7 +54,7 @@ const SelectFiles = ({ handleFileSelection }) => {
           <Box
             component="span"
             sx={{
-              display: { xs: "none", sm: "inline" },
+              display: { xs: "none", md: "inline" },
               lineHeight: 0,
               fontSize: "16px",
             }}
@@ -54,7 +65,6 @@ const SelectFiles = ({ handleFileSelection }) => {
         <Box
           component="span"
           sx={{
-            display: "none",
             color: "rgba(0, 0, 0, 0.6)",
             fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
             fontWeight: 400,
@@ -66,6 +76,8 @@ const SelectFiles = ({ handleFileSelection }) => {
             marginRight: "14px",
             marginBottom: "0",
             marginLeft: "14px",
+            display: "none",
+            opacity: "0",
           }}
         >
           Only Images are allowed
@@ -79,7 +91,7 @@ const SelectFiles = ({ handleFileSelection }) => {
         type="file"
         accept="image/*"
         inputProps={{ multiple: true }}
-        onChange={handleFileSelection}
+        onChange={handleUpload}
       />
     </FormGroup>
   );

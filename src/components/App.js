@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import SiteTitle from "./SiteTitle";
 import FileInputForm from "./FileInputForm";
 import ImageGrid from "./ImageGrid";
 import "./App.scss";
@@ -14,17 +15,11 @@ const App = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [compressedFiles, setCompressedFiles] = useState([]);
 
-  const checkSupport = (type) => {
-    if (type.split("/")[0] === "image") {
-      return true;
-    }
-    return false;
-  };
+  // const checkSupport = (type) => type.split("/")[0] === "image";
 
-  const handleFileSelection = (e) => {
-    const userInputFiles = Object.values(e.target.files)
-      .filter((file) => checkSupport(file.type))
-      .map((image) => {
+  const handleFileSelection = (supportedFiles) => {
+    setSelectedFiles([
+      ...supportedFiles.map((image) => {
         return {
           id: uuidv4(),
           source: image,
@@ -32,11 +27,8 @@ const App = () => {
           size: image.size,
           selected: true,
         };
-      });
-
-    console.log(userInputFiles);
-
-    setSelectedFiles([...userInputFiles]);
+      }),
+    ]);
   };
 
   const getCompressedBlob = async (source, options) => {
@@ -80,6 +72,7 @@ const App = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
+      <SiteTitle />
       <FileInputForm
         handleFileSelection={handleFileSelection}
         handleCompression={handleCompression}
@@ -94,6 +87,7 @@ const App = () => {
           sx={{
             maxWidth: {
               xs: "95vw",
+              sm: "90vw",
               md: "80vw",
             },
           }}
