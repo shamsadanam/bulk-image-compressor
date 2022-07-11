@@ -1,125 +1,123 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import Input from "@mui/material/Input";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import ZoomInMapIcon from "@mui/icons-material/ZoomInMap";
+import SelectFiles from "./SelectFiles";
+import DownloadAllBtn from "./DownloadAllBtn";
+import CompressBtn from "./CompressBtn";
 
-import { FC_VERT, F_BETWEEN } from "./constants";
+import { F_BETWEEN, KB_TO_MB } from "./constants";
 
 const FileInputForm = ({
   handleFileSelection,
   handleCompression,
+  handleDownloadAll,
   hasFiles,
+  compressedFiles,
 }) => {
-  const fileInputRef = useRef("");
-  // const [options, setOptions] = useState({
-  //   maxSizeMB: 1,
-  //   maxWidthOrHeight: 1920,
-  //   useWebWorker: true,
-  // });
+  const [config, setConfig] = useState({
+    options: {
+      maxSizeKB: 1024,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    },
+    hasSizeErr: false,
+    hasResErr: false,
+    errMsg: {
+      maxSizeKB: "Min Size 10KB",
+      maxWidthOrHeight: "Min Width or Height 10px",
+    },
+  });
 
-  const options = {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1600,
-    useWebWorker: true,
+  useEffect(() => {}, [config]);
+
+  const sanitizeValue = (value, oldValue) => {
+    return !value ? "" : isNaN(value) ? oldValue : parseInt(value);
+  };
+
+  const checkErr = (key, value) => {
+    const sanitizedValue = sanitizeValue(value, config.options[key]);
+
+    if (key === "maxWidthOrHeight") {
+      if (sanitizedValue < 11) {
+        return {
+          err: { hasResErr: true, errMsg: "Minimum Width or Height is 11PX" },
+          sanitizedValue,
+        };
+      }
+    } else if (key === "maxSizeKB") {
+      if (sanitizedValue < 10) {
+        return {
+          err: { hasSizeErr: true, errMsg: "Minimum Size is 10KB" },
+          sanitizedValue,
+        };
+      }
+    }
+    return {
+      err: { hasSizeErr: false, hasResErr: false },
+      sanitizedValue,
+    };
+  };
+
+  const handleChange = (key, value) => {
+    const { err, sanitizedValue } = checkErr(key, value);
+    setConfig({
+      ...config,
+      options: { ...config.options, [key]: sanitizedValue },
+      hasSizeErr: err.hasSizeErr,
+      hasResErr: err.hasResErr,
+      errMsg: { ...config.errMsg, [key]: err.errMsg },
+    });
+  };
+
+  const formStyles = {
+    position: { xs: "fixed", sm: "static" },
+    bottom: "0px",
+    right: "0px",
+    left: "0px",
+    ...F_BETWEEN,
+    gap: "20px",
+    maxWidth: "90%",
+    mx: "auto",
+    mb: "20px",
+    p: "20px 20px",
+    borderRadius: "5px",
+    zIndex: 99,
+    backgroundColor: "rgba(255, 255, 255, .6)",
   };
 
   return (
-    <Box
-      sx={{
-        position: { xs: "fixed", sm: "static" },
-        top: "85vh",
-        right: "0px",
-        left: "0px",
-        ...F_BETWEEN,
-        width: { xs: "90%", sm: "auto" },
-        flex: "1",
-        mx: "auto",
-        zIndex: 99,
-      }}
-      component="form"
-      noValidate
-      autoComplete="off"
-    >
-      <FormGroup
-        row
-        sx={{
-          alignItems: "center",
-          justifyContent: { xs: "end", sm: "space-between" },
+    <Box sx={formStyles} component="form" noValidate autoComplete="off">
+      <SelectFiles handleFileSelection={handleFileSelection} />
+      <TextField
+        error={config.hasResErr}
+        helperText={config.errMsg.maxWidthOrHeight}
+        sx={{ ml: "auto" }}
+        label="Max Width or Height in PX"
+        value={config.options.maxWidthOrHeight}
+        onChange={(e) => handleChange("maxWidthOrHeight", e.target.value)}
+      />
+      <TextField
+        error={config.hasSizeErr}
+        helperText={config.errMsg.maxSizeKB}
+        variant="outlined"
+        label="Max Size in KB"
+        min={1}
+        value={config.options.maxSizeKB}
+        onChange={(e) => handleChange("maxSizeKB", e.target.value)}
+      />
+      <CompressBtn
+        disabled={!hasFiles || config.hasSizeErr || config.hasResErr}
+        handleCompression={handleCompression}
+        options={{
+          ...config.options,
+          maxSizeMB: config.options.maxSizeKB / KB_TO_MB,
         }}
-      >
-        <InputLabel
-          htmlFor="upload"
-          sx={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            p: { xs: 2, sm: 1 },
-            borderRadius: { xs: "50%", sm: "10px" },
-            backgroundColor: "#3af",
-            color: "#fff",
-            transition:
-              "background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-            boxShadow:
-              "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
-            "&:hover": {
-              backgroundColor: "#39f",
-              boxShadow:
-                "0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12)",
-            },
-          }}
-        >
-          <FileUploadIcon sx={{ fontSize: { xs: "30px", sm: "25px" } }} />
-          <Box
-            component="span"
-            sx={{
-              display: { xs: "none", sm: "inline" },
-              lineHeight: 0,
-              fontSize: "16px",
-            }}
-          >
-            Select Files
-          </Box>
-        </InputLabel>
-        <Input
-          id="upload"
-          sx={{
-            fontSize: "inherit",
-            maxWidth: "60%",
-            display: { xs: "none" },
-          }}
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          inputProps={{ multiple: true }}
-          onChange={handleFileSelection}
-        />
-      </FormGroup>
-      {hasFiles && (
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => handleCompression(options)}
-          sx={{
-            ...FC_VERT,
-            ml: "auto",
-            p: { xs: 2, sm: 1 },
-            borderRadius: { xs: "50%", sm: "10px" },
-            textTransform: "none",
-          }}
-        >
-          <ZoomInMapIcon sx={{ fontSize: { xs: "30px", sm: "25px" } }} />
-          <Box
-            component="span"
-            sx={{ display: { xs: "none", sm: "inline" }, fontSize: "16px" }}
-          >
-            Compress
-          </Box>
-        </Button>
-      )}
+      />
+      <DownloadAllBtn
+        files={compressedFiles}
+        handleDownloadAll={handleDownloadAll}
+        disabled={!(compressedFiles.length > 1)}
+      />
     </Box>
   );
 };

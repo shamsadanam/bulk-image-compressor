@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
-const DownloadAllBtn = ({ handleDownloadAll, sx }) => {
+const DownloadAllBtn = ({ handleDownloadAll, disabled }) => {
   return (
     <Button
       variant="contained"
@@ -12,12 +12,15 @@ const DownloadAllBtn = ({ handleDownloadAll, sx }) => {
       sx={{
         fontSize: "16px",
         textTransform: "none",
-        borderRadius: { xs: "10px" },
-        ...sx,
+        borderRadius: { xs: "50%", sm: "10px" },
+        p: { xs: 2, sm: 1 },
       }}
+      disabled={disabled}
     >
       <FileDownloadIcon sx={{ fontSize: { xs: "30px", sm: "25px" } }} />
-      <Box component="span">Download All</Box>
+      <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+        Zip Download
+      </Box>
     </Button>
   );
 };
