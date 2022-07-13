@@ -38,14 +38,6 @@ const ImageBox = ({ file }) => {
     );
   };
 
-  useEffect(() => {
-    // source
-    //   ? selected
-    //     ? console.log("Selected Image just rendered")
-    //     : console.log("Compressed Image just rendered")
-    //   : console.log("Default Image just rendered");
-  });
-
   const handleLoaded = () => {
     setLoaded(true);
   };
