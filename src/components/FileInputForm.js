@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TextField, Box } from "@mui/material";
 import SelectFiles from "./SelectFiles";
 import ConfigBtn from "./ConfigBtn";
@@ -29,8 +29,6 @@ const FileInputForm = ({
   });
 
   const [showConfigForm, setShowConfigForm] = useState(false);
-
-  useEffect(() => {}, [config]);
 
   const sanitizeValue = (value, oldValue) => {
     return !value ? "" : isNaN(value) ? oldValue : parseInt(value);
