@@ -2,6 +2,7 @@
   "name": "react-image-compressor",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://shamsadanam.github.io",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -12,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "browser-image-compression": "^2.0.0",
     "file-saver": "^2.0.5",
+    "gh-pages": "^4.0.0",
     "jszip": "^3.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
